@@ -1,4 +1,4 @@
-package es.ulpgc.eite.clean.mvp.sample.dummy;
+package es.ulpgc.eite.clean.mvp.sample.bye;
 
 
 import android.content.Context;
@@ -9,14 +9,12 @@ import es.ulpgc.eite.clean.mvp.GenericActivity;
 import es.ulpgc.eite.clean.mvp.GenericPresenter;
 import es.ulpgc.eite.clean.mvp.sample.app.Mediator;
 
-public class DummyPresenter
-    extends GenericPresenter
-        <Dummy.PresenterToView, Dummy.PresenterToModel, Dummy.ModelToPresenter, DummyModel>
-    implements Dummy.ViewToPresenter, Dummy.ModelToPresenter, Dummy.DummyTo, Dummy.ToDummy {
+public class ByePresenter
+        extends GenericPresenter
+        <Bye.PresenterToView, Bye.PresenterToModel, Bye.ModelToPresenter, ByeModel>
+        implements Bye.ViewToPresenter, Bye.ModelToPresenter, Bye.DummyTo, Bye.ToDummy {
 
-  private boolean toolbarVisible;
-  private boolean buttonClicked;
-  private boolean textVisible;
+  private boolean toolbarVisible, buttonClicked, textVisible, progressBarVisible;
 
   /**
    * Operation called during VIEW creation in {@link GenericActivity#onResume(Class, Object)}
@@ -27,14 +25,22 @@ public class DummyPresenter
    * @param view The current VIEW instance
    */
   @Override
-  public void onCreate(Dummy.PresenterToView view) {
-    super.onCreate(DummyModel.class, this);
+  public void onCreate(Bye.PresenterToView view) {
+    super.onCreate(ByeModel.class, this);
     setView(view);
     Log.d(TAG, "calling onCreate()");
+
+    /*
+    toolbarVisible = false;
+    buttonClicked = false;
+    textVisible = false;
+    progressBarVisible = false;
+    */
 
     Log.d(TAG, "calling startingScreen()");
     Mediator.Lifecycle mediator = (Mediator.Lifecycle) getApplication();
     mediator.startingScreen(this);
+
   }
 
   /**
@@ -45,7 +51,7 @@ public class DummyPresenter
    * @param view The current VIEW instance
    */
   @Override
-  public void onResume(Dummy.PresenterToView view) {
+  public void onResume(Bye.PresenterToView view) {
     setView(view);
     Log.d(TAG, "calling onResume()");
 
@@ -78,21 +84,82 @@ public class DummyPresenter
   public void onDestroy(boolean isChangingConfiguration) {
     super.onDestroy(isChangingConfiguration);
 
-    if(isChangingConfiguration) {
+    if (isChangingConfiguration) {
       Log.d(TAG, "calling onChangingConfiguration()");
     } else {
       Log.d(TAG, "calling onDestroy()");
     }
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////
+  // Model To Presenter /////////////////////////////////////////////////////////////
+
+
+  public void onByeGetMessageTaskFinished(String text){
+
+    if(isViewRunning()) {
+      // pasar el texto a la vista  (aplicar estado)
+      getView().setText(text);
+
+      // hacer visible el texto (aplicar estado)
+      getView().showText();
+
+      // hacer invisible el progress bar (aplicar estado)
+      getView().hideProgressBar();
+
+      // actualizar estado (fijar estado)
+      textVisible = true;
+      progressBarVisible = false;
+    }
+  }
 
   ///////////////////////////////////////////////////////////////////////////////////
   // View To Presenter /////////////////////////////////////////////////////////////
 
+
+  @Override
+  public void onSayHelloBtnClicked() {
+
+    if (isViewRunning()) {
+
+      buttonClicked = true;
+
+      if (textVisible) {
+        getView().hideText();
+
+        textVisible = false;
+      }
+
+      // pedir el texto al modelo asíncronamente
+      // al finalizar el modelo llamará a onByeGetMessageTaskFinished()
+      getModel().startByeGetMessageTask();
+
+      // hacer visible el progress bar (aplicar estado)
+      getView().showProgressBar();
+
+      // actualizar estado (fijar estado)
+
+      progressBarVisible = true;
+
+    }
+  }
+
+  @Override
+  public void onGoToByeBtnClicked() {
+
+    // pedir al mediador que inicie la pantalla de bye
+    Log.d(TAG, "calling goToNextScreen()");
+    Mediator.Navigation mediator = (Mediator.Navigation) getApplication();
+    mediator.goToNextScreen(this);
+    return;
+  }
+
+
+  /*
   @Override
   public void onButtonClicked() {
     Log.d(TAG, "calling onButtonClicked()");
-    if(getModel().isNumOfTimesCompleted()){
+    if (getModel().isNumOfTimesCompleted()) {
 
       getModel().resetMsgByBtnClicked(); // reseteamos el estado al cumplirse la condición
 
@@ -102,7 +169,7 @@ public class DummyPresenter
       return;
     }
 
-    if(isViewRunning()) {
+    if (isViewRunning()) {
       getModel().changeMsgByBtnClicked();
       getView().setText(getModel().getText());
       textVisible = true;
@@ -111,6 +178,7 @@ public class DummyPresenter
     }
 
   }
+  */
 
 
   ///////////////////////////////////////////////////////////////////////////////////
@@ -138,6 +206,16 @@ public class DummyPresenter
   }
 
   @Override
+  public void setProgressBarVisibility(boolean visible) {
+    progressBarVisible = visible;
+  }
+
+  @Override
+  public void setButtonClicked(boolean clicked) {
+    buttonClicked = clicked;
+  }
+
+  @Override
   public void onScreenResumed() {
     Log.d(TAG, "calling onScreenResumed()");
 
@@ -153,13 +231,13 @@ public class DummyPresenter
 
 
   @Override
-  public Context getManagedContext(){
+  public Context getManagedContext() {
     return getActivityContext();
   }
 
   @Override
-  public void destroyView(){
-    if(isViewRunning()) {
+  public void destroyView() {
+    if (isViewRunning()) {
       getView().finishScreen();
     }
   }
@@ -181,24 +259,37 @@ public class DummyPresenter
   private void setCurrentState() {
     Log.d(TAG, "calling setCurrentState()");
 
-    if(isViewRunning()) {
-      getView().setLabel(getModel().getLabel());
+    if (isViewRunning()) {
+      getView().setSayHelloLabel(getModel().getSayByeLabel());
+      getView().setGoToByeLabel(getModel().getGoToHelloLabel());
+      getView().setText(getModel().getText());
     }
     checkToolbarVisibility();
     checkTextVisibility();
+    checkProgressBarVisibility();
   }
 
-  private void checkToolbarVisibility(){
-    if(isViewRunning()) {
+
+  private void checkProgressBarVisibility() {
+    if (isViewRunning()) {
+      if (!progressBarVisible) {
+        getView().hideProgressBar();
+      }
+    }
+  }
+
+
+  private void checkToolbarVisibility() {
+    if (isViewRunning()) {
       if (!toolbarVisible) {
         getView().hideToolbar();
       }
     }
   }
 
-  private void checkTextVisibility(){
-    if(isViewRunning()) {
-      if(!textVisible) {
+  private void checkTextVisibility() {
+    if (isViewRunning()) {
+      if (!textVisible) {
         getView().hideText();
       } else {
         getView().showText();
