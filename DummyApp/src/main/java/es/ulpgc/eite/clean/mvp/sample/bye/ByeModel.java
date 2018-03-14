@@ -9,11 +9,7 @@ import es.ulpgc.eite.clean.mvp.GenericModel;
 public class ByeModel
         extends GenericModel<Bye.ModelToPresenter> implements Bye.PresenterToModel {
 
-
-  //private String dummyText;
-  private String sayByeLabel, goToHelloLabel;
-  //private int numOfTimes;
-  //private int maxNumOfTimes;
+  private String sayByeLabel, backToHelloLabel;
   private String msgText;
   private boolean taskRunning = false;
   private boolean taskFinished = false;
@@ -30,10 +26,8 @@ public class ByeModel
     Log.d(TAG, "calling onCreate()");
 
     sayByeLabel = "Say Bye";
-    goToHelloLabel = "Go To Hello!";
-    //dummyText = "";
+    backToHelloLabel = "Back To Hello!";
     msgText = "Bye World !";
-    //maxNumOfTimes = 3;
   }
 
   /**
@@ -53,7 +47,7 @@ public class ByeModel
 
 
   @Override
-  public void startByeGetMessageTask() {
+  public void startHelloGetMessageTask() {
     if(isTaskRunning()){
       return;
     }
@@ -78,7 +72,7 @@ public class ByeModel
         }
 
       }
-    }, 10000);
+    }, 5000);
   }
 
   @Override
@@ -92,31 +86,6 @@ public class ByeModel
     return taskFinished;
   }
 
-  /*
-  @Override
-  public boolean isNumOfTimesCompleted() {
-    if(numOfTimes == maxNumOfTimes) {
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public void changeMsgByBtnClicked() {
-    msgText = dummyText;
-    if(numOfTimes > 0) {
-      msgText += ", " + (numOfTimes + 1) + " times";
-    }
-    numOfTimes++;
-  }
-
-
-  @Override
-  public void resetMsgByBtnClicked() {
-    numOfTimes = 1;
-    msgText = dummyText;
-  }
-  */
 
   @Override
   public String getText() {
@@ -131,8 +100,8 @@ public class ByeModel
 
 
   @Override
-  public String getGoToHelloLabel() {
-    return goToHelloLabel;
+  public String getBackToHelloLabel() {
+    return backToHelloLabel;
   }
 
 }

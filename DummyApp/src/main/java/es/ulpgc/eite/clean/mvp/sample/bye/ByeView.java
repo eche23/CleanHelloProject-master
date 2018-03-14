@@ -17,7 +17,7 @@ public class ByeView
         implements Bye.PresenterToView {
 
   private Toolbar toolbar;
-  private Button btnGoToBye, btnSayHello;
+  private Button btnBackToHello, btnSayBye;
   private TextView text;
   private ProgressBar progressBar;
 
@@ -33,20 +33,20 @@ public class ByeView
     toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    btnGoToBye = (Button) findViewById(R.id.btnGoToHello);
-    btnGoToBye.setOnClickListener(new View.OnClickListener() {
+    btnBackToHello = (Button) findViewById(R.id.btnBackToHello);
+    btnBackToHello.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        getPresenter().onGoToByeBtnClicked();
+        getPresenter().onBackToHelloBtnClicked();
       }
     });
 
 
-    btnSayHello = (Button) findViewById(R.id.btnSayBye);
-    btnSayHello.setOnClickListener(new View.OnClickListener() {
+    btnSayBye = (Button) findViewById(R.id.btnSayBye);
+    btnSayBye.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        getPresenter().onSayHelloBtnClicked();
+        getPresenter().onSayByeBtnClicked();
       }
     });
 
@@ -116,13 +116,13 @@ public class ByeView
   }
 
   @Override
-  public void setSayHelloLabel(String txt) {
-    btnSayHello.setText(txt);
+  public void setSayByeLabel(String txt) {
+    btnSayBye.setText(txt);
   }
 
 
   @Override
-  public void setGoToByeLabel(String txt) {
-    btnGoToBye.setText(txt);
+  public void setBackToHelloLabel(String txt) {
+    btnBackToHello.setText(txt);
   }
 }
