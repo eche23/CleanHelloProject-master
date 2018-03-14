@@ -54,6 +54,7 @@ public class ByeModel
 
     if(isTaskFinished()) {
       getPresenter().onByeGetMessageTaskFinished(msgText);
+      taskFinished = false;
     } else {
       taskRunning = true;
       startDelayedTask();

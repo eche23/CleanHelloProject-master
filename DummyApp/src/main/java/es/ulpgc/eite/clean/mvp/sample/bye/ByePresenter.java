@@ -128,6 +128,7 @@ public class ByePresenter
 
       if(buttonClicked) {
         /// TODO: 13/3/18  Volver a solicitar datos async al modelo ?
+        getModel().startHelloGetMessageTask();
 
       }
 
