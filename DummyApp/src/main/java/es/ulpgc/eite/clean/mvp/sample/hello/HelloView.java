@@ -13,8 +13,8 @@ import es.ulpgc.eite.clean.mvp.GenericActivity;
 import es.ulpgc.eite.clean.mvp.sample.R;
 
 public class HelloView
-    extends GenericActivity<Hello.PresenterToView, Hello.ViewToPresenter, HelloPresenter>
-    implements Hello.PresenterToView {
+        extends GenericActivity<Hello.PresenterToView, Hello.ViewToPresenter, HelloPresenter>
+        implements Hello.PresenterToView {
 
   private Toolbar toolbar;
   private Button btnGoToBye, btnSayHello;
@@ -37,7 +37,7 @@ public class HelloView
     btnGoToBye.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        getPresenter().onButtonClicked();
+        getPresenter().onGoToByeBtnClicked();
       }
     });
 
@@ -87,7 +87,7 @@ public class HelloView
 
   @Override
   public void hideProgressBar() {
-    progressBar.setVisibility(View.GONE);
+    progressBar.setVisibility(View.INVISIBLE);
   }
 
   @Override
@@ -102,7 +102,7 @@ public class HelloView
 
   @Override
   public void hideText() {
-    text.setVisibility(View.GONE);
+    text.setVisibility(View.INVISIBLE);
   }
 
   @Override

@@ -21,19 +21,24 @@ public interface Hello {
     void setTextVisibility(boolean visible);
   }
 
-  interface ToDummy extends State {
+  interface ToHello extends State {
     void onScreenStarted();
+    void onScreenResumed();
     void setProgressBarVisibility(boolean visible);
     void setButtonClicked(boolean clicked);
+    void setByeTextVisibility(boolean visible);
+    void setByeText(String textBye);
   }
 
-  interface DummyTo extends State{
+  interface HelloToBye extends State{
     Context getManagedContext();
     void destroyView();
     boolean isToolbarVisible();
     boolean isTextVisible();
     void onScreenResumed();
+    String getText();
   }
+
 
   ///////////////////////////////////////////////////////////////////////////////////
   // Screen ////////////////////////////////////////////////////////////////////////
@@ -44,6 +49,7 @@ public interface Hello {
   interface ViewToPresenter extends Presenter<PresenterToView> {
     //void onButtonClicked();
     void onSayHelloBtnClicked();
+    void onGoToByeBtnClicked();
   }
 
   /**
@@ -66,11 +72,10 @@ public interface Hello {
    */
   interface PresenterToModel extends Model<ModelToPresenter> {
     void startHelloGetMessageTask();
-    //boolean isNumOfTimesCompleted();
-    //void changeMsgByBtnClicked();
+    boolean isTaskRunning();
+    boolean isTaskFinished();
     String getText();
     String getSayHelloLabel();
-    //void resetMsgByBtnClicked();
     String getGoToByeLabel();
   }
 

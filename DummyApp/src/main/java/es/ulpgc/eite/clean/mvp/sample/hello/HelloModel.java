@@ -7,13 +7,9 @@ import es.ulpgc.eite.clean.mvp.GenericModel;
 
 
 public class HelloModel
-    extends GenericModel<Hello.ModelToPresenter> implements Hello.PresenterToModel {
+        extends GenericModel<Hello.ModelToPresenter> implements Hello.PresenterToModel {
 
-
-  //private String dummyText;
   private String sayHelloLabel, goToByeLabel;
-  //private int numOfTimes;
-  //private int maxNumOfTimes;
   private String msgText;
   private boolean taskRunning = false;
   private boolean taskFinished = false;
@@ -31,9 +27,7 @@ public class HelloModel
 
     sayHelloLabel = "Say Hello";
     goToByeLabel = "Go To Bye!";
-    //dummyText = "";
     msgText = "Hello World !";
-    //maxNumOfTimes = 3;
   }
 
   /**
@@ -54,12 +48,13 @@ public class HelloModel
 
   @Override
   public void startHelloGetMessageTask() {
-    if(taskRunning){
+    if(isTaskRunning()){
       return;
     }
 
-    if(taskFinished) {
+    if(isTaskFinished()) {
       getPresenter().onHelloGetMessageTaskFinished(msgText);
+      taskFinished = false;
     } else {
       taskRunning = true;
       startDelayedTask();
@@ -71,41 +66,27 @@ public class HelloModel
     new Handler().postDelayed(new Runnable() {
       @Override
       public void run() {
-        if(taskRunning) {
+        if(isTaskRunning()) {
           getPresenter().onHelloGetMessageTaskFinished(msgText);
           taskRunning = false;
           taskFinished = true;
         }
 
       }
-    }, 10000);
-  }
-
-  /*
-  @Override
-  public boolean isNumOfTimesCompleted() {
-    if(numOfTimes == maxNumOfTimes) {
-      return true;
-    }
-    return false;
+    }, 5000);
   }
 
   @Override
-  public void changeMsgByBtnClicked() {
-    msgText = dummyText;
-    if(numOfTimes > 0) {
-      msgText += ", " + (numOfTimes + 1) + " times";
-    }
-    numOfTimes++;
+  public boolean isTaskRunning() {
+    return taskRunning;
   }
-
 
   @Override
-  public void resetMsgByBtnClicked() {
-    numOfTimes = 1;
-    msgText = dummyText;
+  public boolean isTaskFinished() {
+
+    return taskFinished;
   }
-  */
+
 
   @Override
   public String getText() {
